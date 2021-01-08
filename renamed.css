@@ -1,0 +1,101 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+body{
+    background: rgb(248, 232, 244);
+}
+
+#calendar{
+    width: 60%;
+    margin: 10% auto 0;
+    border-radius: 10px;
+}
+
+.arrow {
+    border: solid rgb(190, 147, 190);
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 6px;
+    cursor: pointer;
+    margin-left: 50%;
+    margin-top: 3%;
+  }
+  .up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+  }
+  
+  .down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+  }
+
+  /* side div with prev and next months */
+  .months{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 3%;
+  }
+  .months span{
+      text-align: center;
+      cursor: pointer;
+      background:rgb(184, 158, 177);
+      color: white;
+      padding: 15% 0;
+      border-radius: 5px;
+  }
+  .currmonth{
+    display: block;
+    text-align: center;
+    color: rgb(165, 143, 159);
+    padding-bottom: 2%;
+}
+
+/* calendar */
+.mainContainer{
+    display: flex;
+    padding-top: 4%;
+}
+
+.today{
+    background:rgb(184, 158, 177);
+    color: white;
+}
+.cellsContainer{
+    width: 100%;
+}
+.weeksUl{
+    display: flex;
+    justify-content: space-between;
+}
+
+.dateCell{
+    border: 1px solid rgb(211, 158, 211);
+    border-radius: 5px;
+    text-align: center;
+    display: inline-block;
+    padding: 1.5% 1.2%;
+    width: 10%;
+    height: 10%;
+    margin: 1.5%;
+}
+/* div with the ul days of the week */
+.days{
+    list-style-type: none;
+}
+.days li{
+    display: inline-block;
+    padding: .2%;
+    width: 10.5%;
+    height: 10%;
+    margin: 1.5%;
+    text-align: center;
+    border: 1px dotted plum;
+    border-radius: 10px;
+}
+.weeksUl{
+    margin: 0 auto;
+}
+
