@@ -41,10 +41,83 @@ class Calendar{
         ?>
 
         <script>
-        // get all php els to sabstitude content in js
+        // // get all php els to sabstitude content in js
         const prevMonth = document.getElementsByClassName('prevMonth')[0];
-        const nextMonth = document.getElementsByClassName('nextMonth')[0]
+        const nextMonth = document.getElementsByClassName('nextMonth')[0];
 
+        const section = document.querySelector('#calendar')
+        const arrowUp = document.getElementsByClassName('up')[0]
+        const mainContainer = document.getElementsByClassName('mainContainer')[0]
+        const currmonth = document.getElementsByClassName('currmonth')[0]
+        const month = document.getElementsByClassName('months')[0]
+        const cellsContainer = document.getElementsByClassName('cellsContainer')[0]
+        const down = document.getElementsByClassName('down')[0]
+        let weeksUl = document.getElementsByClassName('weeksUl')
+        let dateCell = document.getElementsByClassName('dateCell')
+
+        const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+        let calendar = document.getElementById('calendar')
+        let firstMonday = calendar.querySelectorAll('.weeksUl')[0]
+        console.log(firstMonday)
+        
+        prevMonth.addEventListener('click', function(){
+            let date = new Date(firstMonday.getAttribute("data-monday")); // every monday
+            let monthNum = date.getMonth();
+            let currMonth = months[monthNum];
+            let currYear = date.getFullYear();
+
+            let lastmonth = new Date(date);
+            lastmonth.setDate(lastmonth.getDate()+6);
+            lastmonth.setMonth(lastmonth.getMonth()-1);
+            let nextmonth = new Date(date);
+            nextmonth.setDate(nextmonth.getDate()+6);
+            nextmonth.setMonth(nextmonth.getMonth());
+
+            prevMonth.innerHTML = months[lastmonth.getMonth()];
+            nextMonth.innerHTML = months[nextmonth.getMonth()];
+            currmonth.innerHTML = `${months[lastmonth.getMonth()]} ${lastmonth.getFullYear()}`;
+            const daysInWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+            var firstofmonth = new Date([date.getFullYear(),date.getMonth()+1,1].join("-")+" 0:00");
+            var startdate = firstofmonth
+
+            var lastofmonth = new Date(firstofmonth);
+            lastofmonth.setMonth(lastofmonth.getMonth()+1);
+            lastofmonth.setDate(lastofmonth.getDate()-1);
+            var enddate = lastofmonth;
+
+            // // get the first monday of the month
+            while(startdate.getDay() != 1) {
+                startdate.setDate(startdate.getDate()-1);
+            }
+            while(enddate.getDay() != 0) {
+                enddate.setDate(enddate.getDate()+1);
+            }
+
+            // // display prev month dates in calendar cells
+            var currentdate = new Date(startdate);
+            var weekdiv;
+            var datecell;
+        
+            while(cellsContainer.children.length > 2){
+                cellsContainer.removeChild(cellsContainer.children[2]);
+            }
+
+            while (currentdate <= enddate) {
+                var i = currentdate.getDay();
+                if(i == 1){         // 1 = Monday    
+                    weekdiv = document.createElement("div");
+                    weekdiv.classList.add("weeksUl");
+                    cellsContainer.appendChild(weekdiv);
+                }
+                datecell = document.createElement("span");
+                datecell.classList.add("dateCell");
+                datecell.innerHTML = currentdate.getDate();
+                weekdiv.appendChild(datecell)
+                
+                currentdate.setDate(currentdate.getDate()+1);
+            }
+        });
         prevMonth.addEventListener('click', function(){
             replaceCurrMonth('prevMonth');
         });
@@ -54,85 +127,85 @@ class Calendar{
 
 
         // func for replacing the date cells for prev and next month 
-        function replaceCurrMonth(direction){
-            const section = document.querySelector('#calendar')
-            const arrowUp = document.getElementsByClassName('up')[0]
-            const mainContainer = document.getElementsByClassName('mainContainer')[0]
-            const currmonth = document.getElementsByClassName('currmonth')[0]
-            const month = document.getElementsByClassName('months')[0]
-            const cellsContainer = document.getElementsByClassName('cellsContainer')[0]
-            const down = document.getElementsByClassName('down')[0]
-            let weeksUl = document.getElementsByClassName('weeksUl')
-            let dateCell = document.getElementsByClassName('dateCell')
+        // function replaceCurrMonth(direction){
+        //     const section = document.querySelector('#calendar')
+        //     const arrowUp = document.getElementsByClassName('up')[0]
+        //     const mainContainer = document.getElementsByClassName('mainContainer')[0]
+        //     const currmonth = document.getElementsByClassName('currmonth')[0]
+        //     const month = document.getElementsByClassName('months')[0]
+        //     const cellsContainer = document.getElementsByClassName('cellsContainer')[0]
+        //     const down = document.getElementsByClassName('down')[0]
+        //     let weeksUl = document.getElementsByClassName('weeksUl')
+        //     let dateCell = document.getElementsByClassName('dateCell')
 
-            const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-            let calendar = document.getElementById('calendar')
-            let monday = calendar.querySelectorAll('.weeksUl')[0]
+        //     const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+        //     let calendar = document.getElementById('calendar')
+        //     let monday = calendar.querySelectorAll('.weeksUl')[0]
             
-            let date = new Date(monday.getAttribute("data-monday"));
-            let monthNum = date.getMonth();
-            let currMonth = months[monthNum];
-            let currYear = date.getFullYear();
+        //     let date = new Date(monday.getAttribute("data-monday"));
+        //     let monthNum = date.getMonth();
+        //     let currMonth = months[monthNum];
+        //     let currYear = date.getFullYear();
 
-            if(direction === 'prevMonth'){
-                let lastmonth = new Date(date);
-                lastmonth.setDate(lastmonth.getDate()+6);
-                lastmonth.setMonth(lastmonth.getMonth()-2);
-                let nextmonth = new Date(date);
-                nextmonth.setDate(nextmonth.getDate()+6);
-                nextmonth.setMonth(nextmonth.getMonth());
+        //     if(direction === 'prevMonth'){
+        //         let lastmonth = new Date(date);
+        //         lastmonth.setDate(lastmonth.getDate()+6);
+        //         lastmonth.setMonth(lastmonth.getMonth()-2);
+        //         let nextmonth = new Date(date);
+        //         nextmonth.setDate(nextmonth.getDate()+6);
+        //         nextmonth.setMonth(nextmonth.getMonth());
 
-                prevMonth.innerHTML = months[lastmonth.getMonth()];
-                nextMonth.innerHTML = months[nextmonth.getMonth()];
-                currmonth.innerHTML = `${currMonth} ${currYear}`;
-                const daysInWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        //         prevMonth.innerHTML = months[lastmonth.getMonth()];
+        //         nextMonth.innerHTML = months[nextmonth.getMonth()];
+        //         currmonth.innerHTML = `${currMonth} ${currYear}`;
+        //         const daysInWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 
 
-                var firstofmonth = new Date([date.getFullYear(),date.getMonth()+1,1].join("-")+" 0:00");
-                var startdate = firstofmonth
+        //         var firstofmonth = new Date([date.getFullYear(),date.getMonth()+1,1].join("-")+" 0:00");
+        //         var startdate = firstofmonth
 
-                var lastofmonth = new Date(firstofmonth);
-                lastofmonth.setMonth(lastofmonth.getMonth()+1);
-                lastofmonth.setDate(lastofmonth.getDate()-1);
-                var enddate = lastofmonth;
+        //         var lastofmonth = new Date(firstofmonth);
+        //         lastofmonth.setMonth(lastofmonth.getMonth()+1);
+        //         lastofmonth.setDate(lastofmonth.getDate()-1);
+        //         var enddate = lastofmonth;
 
-                // // get the first monday of the month
-                while(startdate.getDay() != 1) {
-                    startdate.setDate(startdate.getDate()-1);
-                }
-                while(enddate.getDay() != 0) {
-                    enddate.setDate(enddate.getDate()+1);
-                }
+        //         // // get the first monday of the month
+        //         while(startdate.getDay() != 1) {
+        //             startdate.setDate(startdate.getDate()-1);
+        //         }
+        //         while(enddate.getDay() != 0) {
+        //             enddate.setDate(enddate.getDate()+1);
+        //         }
 
-                // // display prev month dates in calendar cells
-                var currentdate = new Date(startdate);
-                var weekdiv;
-                var datecell;
+        //         // // display prev month dates in calendar cells
+        //         var currentdate = new Date(startdate);
+        //         var weekdiv;
+        //         var datecell;
             
-                while(cellsContainer.children.length > 2){
-                    cellsContainer.removeChild(cellsContainer.children[2]);
-                }
+        //         while(cellsContainer.children.length > 2){
+        //             cellsContainer.removeChild(cellsContainer.children[2]);
+        //         }
 
-                while (currentdate <= enddate) {
-                    var i = currentdate.getDay();
-                    if(i == 1){         // 1 = Monday    
-                        weekdiv = document.createElement("div");
-                        weekdiv.classList.add("weeksUl");
-                        cellsContainer.appendChild(weekdiv);
-                    }
-                    datecell = document.createElement("span");
-                    datecell.classList.add("dateCell");
-                    datecell.innerHTML = currentdate.getDate();
-                    weekdiv.appendChild(datecell)
+        //         while (currentdate <= enddate) {
+        //             var i = currentdate.getDay();
+        //             if(i == 1){         // 1 = Monday    
+        //                 weekdiv = document.createElement("div");
+        //                 weekdiv.classList.add("weeksUl");
+        //                 cellsContainer.appendChild(weekdiv);
+        //             }
+        //             datecell = document.createElement("span");
+        //             datecell.classList.add("dateCell");
+        //             datecell.innerHTML = currentdate.getDate();
+        //             weekdiv.appendChild(datecell)
                     
-                    currentdate.setDate(currentdate.getDate()+1);
-                }
-            }else if(direction == 'nextMonth'){
-                alert('next month to come')
-            }
+        //             currentdate.setDate(currentdate.getDate()+1);
+        //         }
+        //     }else if(direction == 'nextMonth'){
+        //         alert('next month to come')
+        //     }
             
-        }
+        // }
         </script>
         <?php
         $content .= ob_get_clean();

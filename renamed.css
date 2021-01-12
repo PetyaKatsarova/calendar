@@ -84,9 +84,10 @@ body{
 /* div with the ul days of the week */
 .days{
     list-style-type: none;
+    display: flex;
+    justify-content: space-between;
 }
 .days li{
-    display: inline-block;
     padding: .2%;
     width: 10.5%;
     height: 10%;
