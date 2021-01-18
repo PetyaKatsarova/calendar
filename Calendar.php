@@ -6,7 +6,6 @@ class Calendar{
    public function show()
    {    
         $content = '<section id="calendar">';      
-
         $count = 1;
         $content .= '<div class="mainContainer">';
         $content .= '<div class="months"></div>';
@@ -40,8 +39,6 @@ class Calendar{
 
         <script>
         // // get all php els to sabstitude content in js
-        const prevMonth = document.getElementsByClassName('prevMonth')[0];
-        const nextMonth = document.getElementsByClassName('nextMonth')[0];
         const section = document.querySelector('#calendar')
         const arrowUp = document.getElementsByClassName('up')[0]
         const arrowDown = document.getElementsByClassName('down')[0]
@@ -53,73 +50,65 @@ class Calendar{
         const cellsContainer = document.getElementsByClassName('cellsContainer')[0]
         let weeksUl = document.getElementsByClassName('weeksUl')
         let dateCell = document.getElementsByClassName('dateCell')
-                
-       // prevMonth.addEventListener('click', function(){
-    
-        //     const currmonth = document.getElementsByClassName('currmonth')[0]
-        //     let firstMonday = calendar.querySelectorAll('.weeksUl')[0]
-
-        //     let date = new Date(firstMonday.getAttribute("data-monday")); // every monday
-        //     let monthNum = date.getMonth();
-        //     let currMonth = months[monthNum];
-        //     let currYear = date.getFullYear();
-
-        //     let lastmonth = new Date(date);
-        //     lastmonth.setDate(lastmonth.getDate()+6); // setting sunday the same month: not because it is -1 month
-        //     // but still has a week  and always starts on thu or fri
-        //     lastmonth.setMonth(lastmonth.getMonth()-1); // set prev month 
-        //     let nextmonth = new Date(date);
-        //     nextmonth.setDate(nextmonth.getDate()+6);
-        //     nextmonth.setMonth(nextmonth.getMonth());
-
-
-        //     prevMonth.innerHTML = months[lastmonth.getMonth() -1];
-        //     nextMonth.innerHTML = months[nextmonth.getMonth()];           
-
-        //     currmonth.innerHTML = `${months[lastmonth.getMonth()]} ${lastmonth.getFullYear()}`;
-        //     const daysInWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-        //     var firstofmonth = new Date([date.getFullYear(),date.getMonth()+1,1].join("-")+" 0:00"); 
-        //     firstofmonth.setMonth(firstofmonth.getMonth()-1)
-        //     var startdate = firstofmonth // why is that?????????????????
-
-        //     var lastofmonth = new Date(firstofmonth);
-        //     lastofmonth.setMonth(lastofmonth.getMonth()+1);
-        //     lastofmonth.setDate(lastofmonth.getDate()-1);
-        //     var enddate = lastofmonth;
-
-        //     // get the first monday of the month or closest monday of the prev and next month
-        //     while(startdate.getDay() != 1) {
-        //         startdate.setDate(startdate.getDate()-1);
-        //     }
-        //     while(enddate.getDay() != 0) {
-        //         enddate.setDate(enddate.getDate()+1);
-        //     }
-
-        //     // display prev month dates in calendar cells
-        //     var currentdate = new Date(startdate);
-
-        //     // remove all weeksUl divs to be replaced with updated ones
-        //     while(cellsContainer.children.length > 2){
-        //         cellsContainer.removeChild(cellsContainer.children[2]);
-        //     }
-
-        //    // displayMonth('prevMonth');
-        //     let weekdiv;
-        //     let datecell;
-        //     appendDatecell(currentdate, enddate, cellsContainer);
             
-       // });
+        
+    
+        arrowDown.addEventListener('click', function(){
+            const currmonth = document.getElementsByClassName('currmonth')[0]
+            let dateCell = document.getElementsByClassName('dateCell')
+            let firstMondayDiv = calendar.querySelectorAll('.weeksUl')[0]
+            let lastMonday = calendar.querySelector('.weeksUlwrapper').lastChild
+
+            let firstMonDate = new Date(firstMondayDiv.getAttribute("data-monday")); // every monday
+            let monthFirstM = months[firstMonDate.getMonth()];
+            let dayFirstM = firstMonDate.getDate();
+
+            let lastMon = new Date(lastMonday.getAttribute("data-monday")); 
+            let monthLastM = months[lastMon.getMonth()];
+            let dayLastM = lastMon.getDate();   
+  
+            let startdate = new Date(lastMon);
+            startdate.setDate(startdate.getDate()+7);
+            let enddate = new Date(startdate);
+            enddate.setDate(enddate.getDate()+13);
+            let currentdate = new Date(startdate)
+
+            appendDatecell(currentdate, enddate, weeksUlwrapper)
+            displayMonths()
+        });
+
+        arrowUp.addEventListener('click', function(){
+            const currmonth = document.getElementsByClassName('currmonth')[0]
+            let dateCell = document.getElementsByClassName('dateCell')
+            let firstMondayDiv = calendar.querySelectorAll('.weeksUl')[0]
+            let lastMonday = calendar.querySelector('.weeksUlwrapper').lastChild
+
+            let enddate = new Date(firstMondayDiv.getAttribute("data-monday"))
+            enddate.setDate(enddate.getDate()-1)
+            //console.log(startdate)
+            let startdate = new Date(enddate)
+            startdate.setDate(startdate.getDate()-13)
+            console.log(startdate + ' - ' + enddate)
+            let currentdate = new Date(startdate)
+
+            let docFrag = document.createDocumentFragment()
+
+            appendDatecell(currentdate, enddate, docFrag)
+            weeksUlwrapper.prepend(docFrag)
+            displayMonths()
+        });
+        displayMonths()
+
         function appendDatecell(currentdate,enddate,cellsContainer){
             while (currentdate <= enddate) {
                 var i = currentdate.getDay();
                 if(i == 1){         // 1 = Monday    
                     weekdiv = document.createElement("div");
                     weekdiv.classList.add("weeksUl");
-                    weekdiv.setAttribute("data-monday",currentdate.toLocaleDateString());
-                    weekdiv.classList.add("nextweeks");
-                    // add data-monday attr
-                    cellsContainer.appendChild(weekdiv);
+                        weekdiv.setAttribute("data-monday",currentdate.toLocaleDateString());
+                        weekdiv.classList.add("nextweeks");
+                        // add data-monday attr
+                        cellsContainer.appendChild(weekdiv);
                 }
                 datecell = document.createElement("span");
                 datecell.classList.add("dateCell");
@@ -142,8 +131,8 @@ class Calendar{
             while(month.children.length){
                 month.removeChild(month.children[0])
             }
-            
-            while (currentdate.getTime() <= endDate.getTime() ){
+        
+            while (currentdate.getTime() <= endDate.getTime()){
                 //add button for this month
                 let btn = document.createElement('button');
                 btn.setAttribute('data-month', currentdate.getTime())
@@ -158,16 +147,11 @@ class Calendar{
                     let currYear = date.getFullYear();
 
                     let lastmonth = new Date(date);
-                    lastmonth.setDate(lastmonth.getDate()+6); // setting sunday the same month: not because it is -1 month
-                    // but still has a week  and always starts on thu or fri
+                    lastmonth.setDate(lastmonth.getDate()+6);
                     lastmonth.setMonth(lastmonth.getMonth()-1); // set prev month 
                     let nextmonth = new Date(date);
                     nextmonth.setDate(nextmonth.getDate()+6);
-                    nextmonth.setMonth(nextmonth.getMonth());
-
-
-                    // prevMonth.innerHTML = months[lastmonth.getMonth() -1];
-                    // nextMonth.innerHTML = months[nextmonth.getMonth()];           
+                    nextmonth.setMonth(nextmonth.getMonth());         
 
                     currmonth.innerHTML = `${months[lastmonth.getMonth()]} ${lastmonth.getFullYear()}`;
                     const daysInWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -197,90 +181,15 @@ class Calendar{
                         cellsContainer.removeChild(cellsContainer.children[2]);
                     }
 
-                // displayMonth('prevMonth');
+                    // displayMonth('prevMonth');
                     let weekdiv;
                     let datecell;
                     appendDatecell(currentdate, enddate, cellsContainer);
-            
                 });
                 month.appendChild(btn)
                 currentdate.setMonth(currentdate.getMonth()+1);
             }
         }
-    
-        arrowDown.addEventListener('click', function(){
-            const currmonth = document.getElementsByClassName('currmonth')[0]
-            const cellsContainer = document.getElementsByClassName('cellsContainer')[0]
-            let weeksUl = document.getElementsByClassName('weeksUl')
-            let dateCell = document.getElementsByClassName('dateCell')
-            let firstMondayDiv = calendar.querySelectorAll('.weeksUl')[0]
-            let lastMonday = calendar.querySelector('.weeksUlwrapper').lastChild
-
-            let firstMonDate = new Date(firstMondayDiv.getAttribute("data-monday")); // every monday
-            let monthFirstM = months[firstMonDate.getMonth()];
-            let dayFirstM = firstMonDate.getDate();
-
-            let lastMon = new Date(lastMonday.getAttribute("data-monday")); 
-            let monthLastM = months[lastMon.getMonth()];
-            let dayLastM = lastMon.getDate();   
-  
-            let startdate = new Date(lastMon);
-            startdate.setDate(startdate.getDate()+7);
-
-            let enddate = new Date(startdate);
-            enddate.setDate(enddate.getDate()+13);
-            let currentdate = new Date(startdate)
-
-            appendDatecell(currentdate, enddate,weeksUlwrapper)
-          
-            displayMonths()
-        });
-
-        arrowUp.addEventListener('click', function(){
-            const currmonth = document.getElementsByClassName('currmonth')[0]
-            const cellsContainer = document.getElementsByClassName('cellsContainer')[0]
-            let weeksUl = document.getElementsByClassName('weeksUl')
-            let dateCell = document.getElementsByClassName('dateCell')
-            let firstMondayDiv = calendar.querySelectorAll('.weeksUl')[0]
-            let lastMonday = calendar.querySelector('.weeksUlwrapper').lastChild
-
-            let enddate = new Date(firstMondayDiv.getAttribute("data-monday"))
-            enddate.setDate(enddate.getDate()-1)
-            //console.log(startdate)
-            let startdate = new Date(enddate)
-            startdate.setDate(startdate.getDate()-13)
-            console.log(startdate + ' - ' + enddate)
-            let currentdate = new Date(startdate)
-
-            let docFrag = document.createDocumentFragment()
-
-            appendDatecell(currentdate, enddate, docFrag)
-            weeksUlwrapper.prepend(docFrag)
-            displayMonths()
-        });
-        displayMonths()
-        // function prepend(currentdate,enddate,cellsContainer){
-        //     console.log(currentdate)
-        //     console.log(enddate)
-        //     while (currentdate >= enddate) {
-        //         var i = currentdate.getDay();
-        //         if(i == 1){         // 1 = Monday     
-        //             weekdiv = document.createElement("div");
-        //             weekdiv.classList.add("weeksUl");
-        //             weekdiv.setAttribute("data-monday",currentdate.toLocaleDateString());
-        //             weekdiv.classList.add('prevweeks')
-        //             // add data-monday attr
-        //             cellsContainer.prepend(weekdiv);
-        //         }
-        //         datecell = document.createElement("span");
-        //         datecell.classList.add("dateCell");
-        //         datecell.innerHTML = currentdate.getDate();
-        //         datecell.innerHTML += " "+months[currentdate.getMonth()];
-        //         weekdiv.prepend(datecell)
-        //         currentdate.setDate(currentdate.getDate()-1);
-        //     }
-        // } 
-
         </script>
         <?php
         $content .= ob_get_clean();
