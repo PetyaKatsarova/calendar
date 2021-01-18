@@ -24,6 +24,7 @@ body{
   .up {
     transform: rotate(-135deg);
     -webkit-transform: rotate(-135deg);
+    margin-bottom: 2%;
   }
   
   .down {
@@ -100,5 +101,15 @@ body{
 }
 .weeksUl{
     margin: 0 auto;
+}
+.submitBtn{
+    background: rgb(165, 143, 159);
+    color: white;
+    padding: 1% 3%;
+    border-radius: 5%;
+    margin-left: 88%;
+}
+.prevweeks, .nextWeeks{
+    opacity: .5;
 }
 
