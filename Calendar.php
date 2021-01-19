@@ -138,29 +138,10 @@ class Calendar{
                 btn.setAttribute('data-month', currentdate.getTime())
                 btn.innerHTML = months[currentdate.getMonth()];
                 btn.addEventListener('click', function(){
-                    const currmonth = document.getElementsByClassName('currmonth')[0]
-                    let firstMonday = calendar.querySelectorAll('.weeksUl')[0]
 
-                    let date = new Date(firstMonday.getAttribute("data-monday")); // every monday
-                    let monthNum = date.getMonth();
-                    let currMonth = months[monthNum];
-                    let currYear = date.getFullYear();
+                    let startdate = new Date(Number(this.getAttribute("data-month")));
 
-                    let lastmonth = new Date(date);
-                    lastmonth.setDate(lastmonth.getDate()+6);
-                    lastmonth.setMonth(lastmonth.getMonth()-1); // set prev month 
-                    let nextmonth = new Date(date);
-                    nextmonth.setDate(nextmonth.getDate()+6);
-                    nextmonth.setMonth(nextmonth.getMonth());         
-
-                    currmonth.innerHTML = `${months[lastmonth.getMonth()]} ${lastmonth.getFullYear()}`;
-                    const daysInWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-                    var firstofmonth = new Date([date.getFullYear(),date.getMonth()+1,1].join("-")+" 0:00"); 
-                    firstofmonth.setMonth(firstofmonth.getMonth()-1)
-                    var startdate = firstofmonth // why is that?????????????????
-
-                    var lastofmonth = new Date(firstofmonth);
+                    var lastofmonth = new Date(startdate);
                     lastofmonth.setMonth(lastofmonth.getMonth()+1);
                     lastofmonth.setDate(lastofmonth.getDate()-1);
                     var enddate = lastofmonth;
@@ -174,17 +155,19 @@ class Calendar{
                     }
 
                     // display prev month dates in calendar cells
-                    var currentdate = new Date(startdate);
+                    // var currentdate = new Date(startdate);
 
-                    // remove all weeksUl divs to be replaced with updated ones
-                    while(cellsContainer.children.length > 2){
-                        cellsContainer.removeChild(cellsContainer.children[2]);
-                    }
+                    // // remove all weeksUl divs to be replaced with updated ones
+                    // while(cellsContainer.children.length > 2){
+                    //     cellsContainer.removeChild(cellsContainer.children[2]);
+                    // }
 
-                    // displayMonth('prevMonth');
-                    let weekdiv;
-                    let datecell;
-                    appendDatecell(currentdate, enddate, cellsContainer);
+                    // // displayMonth('prevMonth');
+                    // let weekdiv;
+                    // let datecell;
+                    weeksUlwrapper.innerHTML = "";
+                    appendDatecell(startdate, enddate, weeksUlwrapper);
+                    displayMonths();
                 });
                 month.appendChild(btn)
                 currentdate.setMonth(currentdate.getMonth()+1);
