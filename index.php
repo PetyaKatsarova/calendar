@@ -8,8 +8,9 @@
 
 $calendar = new Calendar();
 echo $calendar->show();
+// calculate current week num
+//ob_clean();
 ?>
-
 </body>
 </html>
 
