@@ -29,6 +29,11 @@ class Calendar{
             $count++;
         };
         $content .= '</div>'; ///weeksUlwrapper
+        $content .= '<ul class="days">';
+        for($i=0; $i<count($this->daysInWeek); $i++){
+           $content .= '<li>' .$this->daysInWeek[$i] . '</li>';
+        }
+        $content .= '</ul>'; 
         $content .= '<i class="arrow down"></i><br>';
         $content .= '<button" class="submitBtn">Submit </button></section>';
         $content .= '</div></div>'; // currMonthContainer/cellsContainer  
@@ -42,7 +47,7 @@ class Calendar{
         const arrowDown = document.getElementsByClassName('down')[0]
         const mainContainer = document.getElementsByClassName('mainContainer')[0]
         var weeksUlwrapper = document.getElementsByClassName('weeksUlwrapper')[0]
-        const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         let calendar = document.getElementById('calendar')  
         const month = document.getElementsByClassName('months')[0]
         const cellsContainer = document.getElementsByClassName('cellsContainer')[0]
@@ -97,6 +102,8 @@ class Calendar{
         });
          displayMonths()
 
+         window.addEventListener('resize', displayMonths);
+
         function appendDatecell(currentdate,enddate,cellsContainer){
             var weekdiv;
             while (currentdate <= enddate) {
@@ -110,13 +117,10 @@ class Calendar{
 
                 let datecell = document.createElement("span");
                 datecell.classList.add("dateCell");
-                // check
                 datecell.setAttribute('data-date',currentdate.getTime())
                 datecell.setAttribute('data-month',""+currentdate.getFullYear()+(currentdate.getMonth()+1));
-                //datecell.innerHTML = currentdate.getDate();
                 let d = currentdate.getDate();
                 datecell.innerHTML = d <= 9 ? `0${d}` : d;
-                // datecell.innerHTML += " "+months[currentdate.getMonth()];
 
                 // to color different months, add class oddMonth || evenMonth
                 let coloredMonthIndex = currentdate.getMonth()
@@ -139,11 +143,11 @@ class Calendar{
                 currentdate.setDate(currentdate.getDate()+1);
             }
         }     
-        function displayMonths(){
+        function displayMonths(){// because attribute returns str
             let startDate = new Date(Number(weeksUlwrapper.children[0].getAttribute('data-monday')))
-            startDate.setDate(1);
+            startDate.setDate(1); // why??? do we set date for the first
             let endDate =  new Date(Number(weeksUlwrapper.children[weeksUlwrapper.children.length-1].getAttribute('data-monday')))
-            endDate.setDate(endDate.getDate()+6)     
+            endDate.setDate(endDate.getDate()+6)// why????????
             
             let currentdate = new Date(startDate);
 
@@ -169,7 +173,7 @@ class Calendar{
                     var lastofmonth = new Date(startdate);
                     lastofmonth.setMonth(lastofmonth.getMonth()+1);
                     lastofmonth.setDate(lastofmonth.getDate()-1);
-                    var enddate = lastofmonth;
+                    var enddate = lastofmonth;// last day of the curr month
 
                     currmonth.innerHTML = btn.innerHTML + ' ' + year
                     // get the first monday of the month or closest monday of the prev and next month
@@ -180,25 +184,16 @@ class Calendar{
                         enddate.setDate(enddate.getDate()+1);
                     }
 
-                    // display prev month dates in calendar cells
-                    // var currentdate = new Date(startdate);
-
-                    // // remove all weeksUl divs to be replaced with updated ones
-                    // while(cellsContainer.children.length > 2){
-                    //     cellsContainer.removeChild(cellsContainer.children[2]);
-                    // }
-
-                    // // displayMonth('prevMonth');
                     weeksUlwrapper.innerHTML = "";
                     appendDatecell(startdate, enddate, weeksUlwrapper);
-                    displayMonths();
+                    // displayMonths();
                 });
                 month.appendChild(btn)
 
                 //calculate where the button should be
                 //find the first datecell of that month
                 let cellsofmonth = weeksUlwrapper.querySelectorAll(".dateCell[data-month=\""+currentdate.getFullYear()+(currentdate.getMonth()+1)+"\"]");
-                firstcell = cellsofmonth[0];
+                firstcell = cellsofmonth[0]; // get the monday
                 let lastcell = cellsofmonth[cellsofmonth.length-1];
                 let factor = (((indexoflastcell+1)%7)/7);
                 let firstpixel = firstcell.getBoundingClientRect().y + firstcell.getBoundingClientRect().height * factor;
