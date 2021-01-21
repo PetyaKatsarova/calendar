@@ -23,9 +23,9 @@ class Calendar{
         for ($timestamp = strtotime("-2 weeks Mon"); $timestamp <= strtotime("+2 weeks Sun"); $timestamp = strtotime("+1 day",$timestamp)) {
             if(($count % 7) === 1) $content .= '<div class="weeksUl" data-monday="'. ($timestamp * 1000) . '">';
     
-            $content .=  '<span class="dateCell'.($timestamp === strtotime("Today") ? " today" : "").(date('m',$timestamp) % 2 == 0 ? " oddMonth" : " evenMonth") . '" data-date=" ' .date('Y M d', $timestamp ) .'">' . date('d M',$timestamp) . '</span>';
+            $content .=  '<span class="dateCell'.($timestamp === strtotime("Today") ? " today" : "").(date('m',$timestamp) % 2 == 0 ? " oddMonth" : " evenMonth") . '" data-date=" ' .date('Y M d', $timestamp ) .'" data-month="'.date("Yn",$timestamp).'">' . date('d',$timestamp) . '</span>';
               
-            if(($count % 7) === 0) $content .= '<span class="dateCell">bu </span></div>'; // weeksUL
+            if(($count % 7) === 0) $content .= '<span class="dateCell week">' . date('W', $timestamp) . '</span></div>'; // weeksUL
             $count++;
         };
         $content .= '</div>'; ///weeksUlwrapper
@@ -72,8 +72,8 @@ class Calendar{
             let currentdate = new Date(startdate)
 
             appendDatecell(currentdate, enddate, weeksUlwrapper)
-            displayMonths()
             currmonth.innerHTML = ''
+            displayMonths()
         });
 
         arrowUp.addEventListener('click', function(){
@@ -92,32 +92,32 @@ class Calendar{
 
             appendDatecell(currentdate, enddate, docFrag)
             weeksUlwrapper.prepend(docFrag)
-            displayMonths()
             currmonth.innerHTML = ''
+            displayMonths()
         });
          displayMonths()
 
         function appendDatecell(currentdate,enddate,cellsContainer){
+            var weekdiv;
             while (currentdate <= enddate) {
                 var i = currentdate.getDay();
                 if(i == 1){         // 1 = Monday    
                     weekdiv = document.createElement("div");
                     weekdiv.classList.add("weeksUl");
-                      //  weekdiv.setAttribute("data-monday",currentdate.toLocaleDateString());
-                        // proba
-                        weekdiv.setAttribute("data-monday",currentdate.getTime());
-                        weekdiv.classList.add("nextweeks");
-                        // add data-monday attr
-                        cellsContainer.appendChild(weekdiv);
-                }
-                // add class odd/even month to fascilitate display of different colors 
+                    weekdiv.setAttribute("data-monday",currentdate.getTime());
+                    cellsContainer.appendChild(weekdiv);
+                 }
 
-                datecell = document.createElement("span");
+                let datecell = document.createElement("span");
                 datecell.classList.add("dateCell");
                 // check
                 datecell.setAttribute('data-date',currentdate.getTime())
-                datecell.innerHTML = currentdate.getDate();
-                datecell.innerHTML += " "+months[currentdate.getMonth()];
+                datecell.setAttribute('data-month',""+currentdate.getFullYear()+(currentdate.getMonth()+1));
+                //datecell.innerHTML = currentdate.getDate();
+                let d = currentdate.getDate();
+                datecell.innerHTML = d <= 9 ? `0${d}` : d;
+                // datecell.innerHTML += " "+months[currentdate.getMonth()];
+
                 // to color different months, add class oddMonth || evenMonth
                 let coloredMonthIndex = currentdate.getMonth()
                 if(coloredMonthIndex % 2 == 0){
@@ -126,6 +126,16 @@ class Calendar{
                     datecell.classList.add('oddMonth');
                 }
                 weekdiv.appendChild(datecell)
+
+                if(i==0){
+                    let result = getWeekNumber(currentdate); // arr[1] is the week num
+                    var weekNum = document.createElement('span');
+                    weekNum.classList.add('dateCell');
+                    weekNum.classList.add('week');
+                    weekNum.innerHTML = result[1] <= 9 ? `0${result[1]}` : result[1];
+                    weekdiv.appendChild(weekNum);
+                }
+
                 currentdate.setDate(currentdate.getDate()+1);
             }
         }     
@@ -141,10 +151,13 @@ class Calendar{
             while(month.children.length){
                 month.removeChild(month.children[0])
             }
-        
+            let months_container_pos = month.getBoundingClientRect();
+            let indexoflastcell = 6;
+            let btn;
+            let firstcell;
             while (currentdate.getTime() <= endDate.getTime()){
                 //add button for this month
-                let btn = document.createElement('button');
+                btn = document.createElement('button');
                 btn.setAttribute('data-month', currentdate.getTime())
                 btn.innerHTML = months[currentdate.getMonth()];
                 let year = currentdate.getFullYear()
@@ -176,15 +189,32 @@ class Calendar{
                     // }
 
                     // // displayMonth('prevMonth');
-                    // let weekdiv;
-                    // let datecell;
                     weeksUlwrapper.innerHTML = "";
                     appendDatecell(startdate, enddate, weeksUlwrapper);
                     displayMonths();
                 });
                 month.appendChild(btn)
+
+                //calculate where the button should be
+                //find the first datecell of that month
+                let cellsofmonth = weeksUlwrapper.querySelectorAll(".dateCell[data-month=\""+currentdate.getFullYear()+(currentdate.getMonth()+1)+"\"]");
+                firstcell = cellsofmonth[0];
+                let lastcell = cellsofmonth[cellsofmonth.length-1];
+                let factor = (((indexoflastcell+1)%7)/7);
+                let firstpixel = firstcell.getBoundingClientRect().y + firstcell.getBoundingClientRect().height * factor;
+                if (month.children.length == 1) {
+                    firstpixel -= firstcell.getBoundingClientRect().height;
+                }
+
+                indexoflastcell = Array.from(lastcell.parentNode.children).indexOf(lastcell);
+
+                let lastpixel = lastcell.getBoundingClientRect().y+lastcell.getBoundingClientRect().height * (indexoflastcell+1)/7;
+                btn.style.top = (firstpixel - months_container_pos.y) + "px";
+                btn.style.height = (lastpixel - firstpixel)+"px";
+
                 currentdate.setMonth(currentdate.getMonth()+1);
             }
+            btn.style.height = btn.getBoundingClientRect().height + firstcell.getBoundingClientRect().height + "px";
         }
         function getWeekNumber(d) {
             // Copy date so don't modify original
@@ -199,8 +229,8 @@ class Calendar{
             // Return array of year and week number
             return [d.getUTCFullYear(), weekNo];
         }
-        var result = getWeekNumber(new Date()); // arr[1] is the week num
-document.write('It\'s currently week ' + result[1] + ' of ' + result[0]);
+        // var result = getWeekNumber(new Date()); // arr[1] is the week num
+        // document.write('It\'s currently week ' + result[1] + ' of ' + result[0]);
         </script>
         <?php
         $content .= ob_get_clean();
