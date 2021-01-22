@@ -1,7 +1,7 @@
 <?php
 class Calendar{
    // PROPS
-   private $daysInWeek = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun','Week');
+   private $daysInWeek = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun','W');
    //private $weekNumber;
 
    public function show()
@@ -52,10 +52,9 @@ class Calendar{
         const month = document.getElementsByClassName('months')[0]
         const cellsContainer = document.getElementsByClassName('cellsContainer')[0]
         let weeksUl = document.getElementsByClassName('weeksUl')
+        const weeksUlWrapper = document.querySelector('.weeksUlWrapper')
         let dateCell = document.getElementsByClassName('dateCell')
-        let currmonth = document.getElementsByClassName('currmonth')[0]
-            
-        
+        let currmonth = document.getElementsByClassName('currmonth')[0]       
     
         arrowDown.addEventListener('click', function(){
            // let dateCell = document.getElementsByClassName('dateCell')
@@ -100,9 +99,9 @@ class Calendar{
             currmonth.innerHTML = ''
             displayMonths()
         });
-         displayMonths()
+        displayMonths()
 
-         window.addEventListener('resize', displayMonths);
+        window.addEventListener('resize', displayMonths);
 
         function appendDatecell(currentdate,enddate,cellsContainer){
             var weekdiv;
@@ -186,7 +185,7 @@ class Calendar{
 
                     weeksUlwrapper.innerHTML = "";
                     appendDatecell(startdate, enddate, weeksUlwrapper);
-                    // displayMonths();
+                    displayMonths();
                 });
                 month.appendChild(btn)
 
@@ -226,6 +225,25 @@ class Calendar{
         }
         // var result = getWeekNumber(new Date()); // arr[1] is the week num
         // document.write('It\'s currently week ' + result[1] + ' of ' + result[0]);
+
+        weeksUlWrapper.addEventListener('mousedown', (e)=>{
+            //let dontSelect = 
+            (e.target.classList.contains('selected') && e.target.tagName == 'SPAN') ? e.target.classList.remove('selected') : e.target.classList.add('selected');
+
+            for(let i=0; i<dateCell.length; i++){
+                dateCell[i].addEventListener('mouseenter', (e)=>{
+                   (e.target.classList.contains('selected')) ? e.target.classList.remove('selected') : e.target.classList.add('selected');
+                })
+            }
+            weeksUlWrapper.addEventListener('mouseup', (e)=>{
+                 e.target.style.background = 'tomato';
+           })
+          // checkbox to toggle if weekends should become selected or not
+          // if sat ,sunday or week: dont add 'selected
+        })       
+
+
+
         </script>
         <?php
         $content .= ob_get_clean();
