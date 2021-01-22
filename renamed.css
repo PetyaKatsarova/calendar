@@ -147,6 +147,9 @@ body{
 .selected{
     background: orange;
 }
+.dateCell:last-child, .dateCell:nth-child(7), .dateCell:nth-child(6){
+    pointer-events: none;
+}
 
 
 @media only screen and (min-width: 470px) {

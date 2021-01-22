@@ -9,6 +9,7 @@ class Calendar{
         $content = '<section id="calendar">';      
         $count = 1;
         $content .= '<div class="mainContainer">';
+        $content .= '<form>';
         $content .= '<div class="months"></div>';
         $content .= '<div class="cellsContainer">';
         $content .= '<i class="arrow up"></i>';  
@@ -37,6 +38,7 @@ class Calendar{
         $content .= '<i class="arrow down"></i><br>';
         $content .= '<button" class="submitBtn">Submit </button></section>';
         $content .= '</div></div>'; // currMonthContainer/cellsContainer  
+        $content .= '</form>';
         ob_start();
         ?>
 
@@ -54,8 +56,8 @@ class Calendar{
         let weeksUl = document.getElementsByClassName('weeksUl')
         const weeksUlWrapper = document.querySelector('.weeksUlWrapper')
         let dateCell = document.getElementsByClassName('dateCell')
-        let currmonth = document.getElementsByClassName('currmonth')[0]       
-    
+        let currmonth = document.getElementsByClassName('currmonth')[0]     
+        
         arrowDown.addEventListener('click', function(){
            // let dateCell = document.getElementsByClassName('dateCell')
             let firstMondayDiv = calendar.querySelectorAll('.weeksUl')[0]
@@ -225,25 +227,24 @@ class Calendar{
         }
         // var result = getWeekNumber(new Date()); // arr[1] is the week num
         // document.write('It\'s currently week ' + result[1] + ' of ' + result[0]);
+        function confused(e){
+                (e.target.classList.contains('selected') && e.target.tagName == 'SPAN') ? e.target.classList.remove('selected') : e.target.classList.add('selected');           
 
-        weeksUlWrapper.addEventListener('mousedown', (e)=>{
-            //let dontSelect = 
-            (e.target.classList.contains('selected') && e.target.tagName == 'SPAN') ? e.target.classList.remove('selected') : e.target.classList.add('selected');
-
-            for(let i=0; i<dateCell.length; i++){
-                dateCell[i].addEventListener('mouseenter', (e)=>{
-                   (e.target.classList.contains('selected')) ? e.target.classList.remove('selected') : e.target.classList.add('selected');
-                })
+                for(let i=0; i<dateCell.length; i++){
+                    dateCell[i].addEventListener('mouseenter', (e)=>{
+                    (e.target.classList.contains('selected')) ? e.target.classList.remove('selected') : e.target.classList.add('selected');
+                    })
+                }
             }
-            weeksUlWrapper.addEventListener('mouseup', (e)=>{
-                 e.target.style.background = 'tomato';
-           })
-          // checkbox to toggle if weekends should become selected or not
-          // if sat ,sunday or week: dont add 'selected
-        })       
+        weeksUlWrapper.addEventListener('mousedown', (e)=>{
+            confused(e)
+        })  
 
-
-
+        weeksUlWrapper.addEventListener('mouseup', (e)=>{
+           // e.target.style.background = 'tomato';
+            weeksUlWrapper.removeEventListener('mousedown', confused(e))
+        })
+         
         </script>
         <?php
         $content .= ob_get_clean();
