@@ -147,7 +147,8 @@ body{
 .selected{
     background: orange;
 }
-.dateCell:last-child, .dateCell:nth-child(7), .dateCell:nth-child(6){
+/* can't selected weekend */
+.dateCell:last-child, .dateCell:nth-child(6), .dateCell:nth-child(7){
     pointer-events: none;
 }
 

@@ -2,14 +2,13 @@
 class Calendar{
    // PROPS
    private $daysInWeek = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun','W');
-   //private $weekNumber;
 
    public function show()
    {    
         $content = '<section id="calendar">';      
         $count = 1;
         $content .= '<div class="mainContainer">';
-        $content .= '<form>';
+        // $content .= '<form>';
         $content .= '<div class="months"></div>';
         $content .= '<div class="cellsContainer">';
         $content .= '<i class="arrow up"></i>';  
@@ -38,7 +37,7 @@ class Calendar{
         $content .= '<i class="arrow down"></i><br>';
         $content .= '<button" class="submitBtn">Submit </button></section>';
         $content .= '</div></div>'; // currMonthContainer/cellsContainer  
-        $content .= '</form>';
+        // $content .= '</form>';
         ob_start();
         ?>
 
@@ -227,8 +226,8 @@ class Calendar{
         }
         // var result = getWeekNumber(new Date()); // arr[1] is the week num
         // document.write('It\'s currently week ' + result[1] + ' of ' + result[0]);
-        function confused(e){
-                (e.target.classList.contains('selected') && e.target.tagName == 'SPAN') ? e.target.classList.remove('selected') : e.target.classList.add('selected');           
+        function mouseEvents(e){
+                (e.target.classList.contains('selected') && e.target.tagName == 'SPAN') ? e.target.classList.remove('selected') : (e.target.tagName == 'SPAN' ? e.target.classList.add('selected') : '') ;           
 
                 for(let i=0; i<dateCell.length; i++){
                     dateCell[i].addEventListener('mouseenter', (e)=>{
@@ -237,13 +236,13 @@ class Calendar{
                 }
             }
         weeksUlWrapper.addEventListener('mousedown', (e)=>{
-            confused(e)
+            mouseEvents(e)
+        //     weeksUlWrapper.addEventListener('mouseup', (e)=>{
+        //    // e.target.style.background = 'tomato';
+        //        weeksUlWrapper.removeEventListener('mousedown', mouseEvents(e))
+        //    })
+           return false;
         })  
-
-        weeksUlWrapper.addEventListener('mouseup', (e)=>{
-           // e.target.style.background = 'tomato';
-            weeksUlWrapper.removeEventListener('mousedown', confused(e))
-        })
          
         </script>
         <?php
