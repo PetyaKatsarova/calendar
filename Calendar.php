@@ -229,38 +229,35 @@ class Calendar{
         // document.write('It\'s currently week ' + result[1] + ' of ' + result[0]);
 
         let startDate;
-        function mouseEvents(e){
-            let mode = "deselect";
-            if (e.target.classList.contains('selected'))  {
-                mode = "select";
-            }         
+        function mouseEvents(e,mode){
+            
 
             function onmouseenter(e){
                 let endDate = new Date(Number(e.target.getAttribute("data-date")));
-                    let cellDate = new Date(startDate)
-                    let tempselected = Array.from(document.getElementsByClassName(mode == "deselect" ? "tempUnSelected" : 'tempSelected'))
-                    for(let temp of tempselected){
-                        temp.classList.remove(mode == "deselect" ? "tempUnSelected" : 'tempSelected')
-                    }
+                let cellDate = new Date(startDate)
+                let tempselected = Array.from(document.getElementsByClassName(mode == "deselect" ? "tempUnSelected" : 'tempSelected'))
+                for(let temp of tempselected){
+                    temp.classList.remove(mode == "deselect" ? "tempUnSelected" : 'tempSelected')
+                }
 
-                    if(endDate < cellDate){
-                        cellDate = new Date(endDate)
-                        endDate = new Date(startDate)
-                    }
+                if(endDate < cellDate){
+                    cellDate = new Date(endDate)
+                    endDate = new Date(startDate)
+                }
             
-                    while(cellDate <= endDate){
-                        if(!document.getElementById('checkb').checked && (cellDate.getDay() == 0 || cellDate.getDay() == 6)){
-                            cellDate.setDate(cellDate.getDate()+1)
-                            continue
-                        }
-                        let cell = document.querySelector(".dateCell[data-date=\""+cellDate.getTime()+"\"]")
-                        if (mode == "select") {
-                            cell.classList.add("tempSelected");
-                        } else {
-                            cell.classList.add('tempUnSelected')
-                        }
+                while(cellDate <= endDate){
+                    if(!document.getElementById('checkb').checked && (cellDate.getDay() == 0 || cellDate.getDay() == 6)){
                         cellDate.setDate(cellDate.getDate()+1)
+                        continue
                     }
+                    let cell = document.querySelector(".dateCell[data-date=\""+cellDate.getTime()+"\"]")
+                    if (mode == "select") {
+                        cell.classList.add("tempSelected");
+                    } else {
+                        cell.classList.add('tempUnSelected')
+                    }
+                    cellDate.setDate(cellDate.getDate()+1)
+                }
             }
             for(let i=0; i<dateCell.length; i++){
                 dateCell[i].addEventListener('mouseenter', onmouseenter)
@@ -286,16 +283,15 @@ class Calendar{
             })
         }
         weeksUlWrapper.addEventListener('mousedown', (e)=>{
-            // let temp = new Date(Number(e.target.getAttribute('data-date')))
- 
-            // if(temp.getDay() != 0 || temp.getDay() != 6){
-            //     e.target.classList.toggle('selected')
-            //     mouseEvents(e)
-            //     startDate = new Date(Number(e.target.getAttribute("data-date")))
-            // }
-            e.target.classList.toggle('selected')
-            mouseEvents(e)
             startDate = new Date(Number(e.target.getAttribute("data-date")))
+            let mode = "select";
+            if (e.target.classList.contains('selected'))  {
+                mode = "deselect";
+            }          
+            if ((document.getElementById('checkb').checked) || ((startDate.getDay() != 0 && startDate.getDay() != 6))){
+                e.target.classList.toggle('selected')
+            }
+            mouseEvents(e,mode)
         })  
          
         </script>
