@@ -23,7 +23,7 @@ class Calendar{
         for ($timestamp = strtotime("-2 weeks Mon"); $timestamp <= strtotime("+2 weeks Sun"); $timestamp = strtotime("+1 day",$timestamp)) {
             if(($count % 7) === 1) $content .= '<div class="weeksUl" data-monday="'. ($timestamp * 1000) . '">';
     
-            $content .=  '<span class="dateCell'.($timestamp === strtotime("Today") ? " today" : "").(date('m',$timestamp) % 2 == 0 ? " oddMonth" : " evenMonth") . '" data-date=" ' .date('Y M d', $timestamp ) .'" data-month="'.date("Yn",$timestamp).'">' . date('d',$timestamp) . '</span>';
+            $content .=  '<span class="dateCell'.($timestamp === strtotime("Today") ? " today" : "").(date('m',$timestamp) % 2 == 0 ? " oddMonth" : " evenMonth") . '" data-date="' .date($timestamp * 1000) .'" data-month="'.date("Yn",$timestamp).'">' . date('d',$timestamp) . '</span>';
               
             if(($count % 7) === 0) $content .= '<span class="dateCell week">' . date('W', $timestamp) . '</span></div>'; // weeksUL
             $count++;
@@ -35,7 +35,10 @@ class Calendar{
         }
         $content .= '</ul>'; 
         $content .= '<i class="arrow down"></i><br>';
-        $content .= '<button" class="submitBtn">Submit </button></section>';
+        $content .= '<div class="wrapperCheckb">';
+        $content .= '<label for = "checkb" class="labelCheckWeekends">Select Weekends</label>';
+        $content .= '<input type = "checkbox" class="checkWeekends" id="checkb" />';
+        $content .= '<button class="submitBtn">Submit </button></div></section>';// wrapperCheck
         $content .= '</div></div>'; // currMonthContainer/cellsContainer  
         // $content .= '</form>';
         ob_start();
@@ -58,7 +61,6 @@ class Calendar{
         let currmonth = document.getElementsByClassName('currmonth')[0]     
         
         arrowDown.addEventListener('click', function(){
-           // let dateCell = document.getElementsByClassName('dateCell')
             let firstMondayDiv = calendar.querySelectorAll('.weeksUl')[0]
             let lastMonday = calendar.querySelector('.weeksUlwrapper').lastChild
 
@@ -82,7 +84,6 @@ class Calendar{
         });
 
         arrowUp.addEventListener('click', function(){
-            // let dateCell = document.getElementsByClassName('dateCell')
             let firstMondayDiv = calendar.querySelectorAll('.weeksUl')[0]
             let lastMonday = calendar.querySelector('.weeksUlwrapper').lastChild
 
@@ -226,22 +227,75 @@ class Calendar{
         }
         // var result = getWeekNumber(new Date()); // arr[1] is the week num
         // document.write('It\'s currently week ' + result[1] + ' of ' + result[0]);
-        function mouseEvents(e){
-                (e.target.classList.contains('selected') && e.target.tagName == 'SPAN') ? e.target.classList.remove('selected') : (e.target.tagName == 'SPAN' ? e.target.classList.add('selected') : '') ;           
 
-                for(let i=0; i<dateCell.length; i++){
-                    dateCell[i].addEventListener('mouseenter', (e)=>{
-                    (e.target.classList.contains('selected')) ? e.target.classList.remove('selected') : e.target.classList.add('selected');
-                    })
-                }
+        let startDate;
+        function mouseEvents(e){
+            let mode = "deselect";
+            if (e.target.classList.contains('selected'))  {
+                mode = "select";
+            }         
+
+            function onmouseenter(e){
+                let endDate = new Date(Number(e.target.getAttribute("data-date")));
+                    let cellDate = new Date(startDate)
+                    let tempselected = Array.from(document.getElementsByClassName(mode == "deselect" ? "tempUnSelected" : 'tempSelected'))
+                    for(let temp of tempselected){
+                        temp.classList.remove(mode == "deselect" ? "tempUnSelected" : 'tempSelected')
+                    }
+
+                    if(endDate < cellDate){
+                        cellDate = new Date(endDate)
+                        endDate = new Date(startDate)
+                    }
+            
+                    while(cellDate <= endDate){
+                        if(!document.getElementById('checkb').checked && (cellDate.getDay() == 0 || cellDate.getDay() == 6)){
+                            cellDate.setDate(cellDate.getDate()+1)
+                            continue
+                        }
+                        let cell = document.querySelector(".dateCell[data-date=\""+cellDate.getTime()+"\"]")
+                        if (mode == "select") {
+                            cell.classList.add("tempSelected");
+                        } else {
+                            cell.classList.add('tempUnSelected')
+                        }
+                        cellDate.setDate(cellDate.getDate()+1)
+                    }
             }
+            for(let i=0; i<dateCell.length; i++){
+                dateCell[i].addEventListener('mouseenter', onmouseenter)
+            }
+            document.body.addEventListener('mouseup', (e)=>{
+                for(let i=0; i<dateCell.length; i++){
+                    dateCell[i].removeEventListener('mouseenter', onmouseenter)
+                }
+                if (mode == "select") {
+                    let tempselected = Array.from(document.getElementsByClassName('tempSelected'))
+                    for(let temp of tempselected){
+                        temp.classList.remove('tempSelected')
+                        temp.classList.add('selected')
+                    }
+                }
+                else {
+                    let tempselected = Array.from(document.getElementsByClassName('tempUnSelected'))
+                    for(let temp of tempselected){
+                        temp.classList.remove('tempUnSelected')
+                        temp.classList.remove('selected')
+                    }
+                }
+            })
+        }
         weeksUlWrapper.addEventListener('mousedown', (e)=>{
+            // let temp = new Date(Number(e.target.getAttribute('data-date')))
+ 
+            // if(temp.getDay() != 0 || temp.getDay() != 6){
+            //     e.target.classList.toggle('selected')
+            //     mouseEvents(e)
+            //     startDate = new Date(Number(e.target.getAttribute("data-date")))
+            // }
+            e.target.classList.toggle('selected')
             mouseEvents(e)
-        //     weeksUlWrapper.addEventListener('mouseup', (e)=>{
-        //    // e.target.style.background = 'tomato';
-        //        weeksUlWrapper.removeEventListener('mousedown', mouseEvents(e))
-        //    })
-           return false;
+            startDate = new Date(Number(e.target.getAttribute("data-date")))
         })  
          
         </script>

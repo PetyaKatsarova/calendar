@@ -78,6 +78,7 @@ body{
     width: 10%;
     height: 10%;
     margin: 1.5%;
+    user-select: none;
 }
 .dateCell{
     border: 1px solid rgb(155, 154, 163);;
@@ -111,6 +112,10 @@ body{
     margin: 0 auto;
 }
 /* button, */
+.wrapperCheckb{
+    display: flex;
+    justify-content: flex-end;
+}
  .submitBtn, button{
     padding: 3px 10px;
     background: rgb(155, 154, 163);
@@ -121,8 +126,15 @@ body{
 }
 .submitBtn{
     padding: 1% 3%;
-    margin-left: 88%;
+    margin-right: 2%;
+    margin-left: 2%;
 }
+ .checkWeekends{
+    margin: 1% 0 0 2%;
+}
+.labelCheckWeekends{
+    margin: .6% 0 0 0;
+} 
 .prevweeks, .nextWeeks{
     opacity: .5;
 }
@@ -144,15 +156,14 @@ body{
     border: none;
     /* margin-top: 3%; */
 }
-.selected{
+.selected:not(.tempUnselected),.tempSelected{
     background: orange;
+
 }
 /* can't selected weekend */
-.dateCell:last-child, .dateCell:nth-child(6), .dateCell:nth-child(7){
+/* .dateCell:last-child, .dateCell:nth-child(6), .dateCell:nth-child(7){
     pointer-events: none;
-}
-
-
+} */
 @media only screen and (min-width: 470px) {
     #calendar{
         margin: 0 auto;
