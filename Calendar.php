@@ -5,10 +5,10 @@ class Calendar{
 
    public function show()
    {    
-        $content = '<section id="calendar">';      
+        $content = '<section id="calendar">';  
+        $content .= '<form>';    
         $count = 1;
         $content .= '<div class="mainContainer">';
-        // $content .= '<form>';
         $content .= '<div class="months"></div>';
         $content .= '<div class="cellsContainer">';
         $content .= '<i class="arrow up"></i>';  
@@ -38,9 +38,9 @@ class Calendar{
         $content .= '<div class="wrapperCheckb">';
         $content .= '<label for = "checkb" class="labelCheckWeekends">Select Weekends</label>';
         $content .= '<input type = "checkbox" class="checkWeekends" id="checkb" />';
-        $content .= '<button class="submitBtn">Submit </button></div></section>';// wrapperCheck
+        $content .= '<button class="submitBtn">Submit </button></div>';// wrapperCheck
         $content .= '</div></div>'; // currMonthContainer/cellsContainer  
-        // $content .= '</form>';
+        $content .= '</form></section>';
         ob_start();
         ?>
 
@@ -285,14 +285,34 @@ class Calendar{
         weeksUlWrapper.addEventListener('mousedown', (e)=>{
             startDate = new Date(Number(e.target.getAttribute("data-date")))
             let mode = "select";
-            if (e.target.classList.contains('selected'))  {
-                mode = "deselect";
-            }          
-            if ((document.getElementById('checkb').checked) || ((startDate.getDay() != 0 && startDate.getDay() != 6))){
-                e.target.classList.toggle('selected')
+            if(e.target.tagName == 'SPAN'){
+                if (e.target.classList.contains('selected'))  {
+                    mode = "deselect";
+                }          
+                if ((document.getElementById('checkb').checked) || ((startDate.getDay() != 0 && startDate.getDay() != 6))){
+                    e.target.classList.toggle('selected')
+                }
+                mouseEvents(e,mode)
             }
-            mouseEvents(e,mode)
         })  
+        // on form sumbission
+        document.getElementsByTagName('form')[0].addEventListener('submit',(e)=>{
+            // remove preventDefault() in production
+           // e.preventDefault()
+            addInputDatecell()
+        })
+        function addInputDatecell(){
+            for(let i=0; i<dateCell.length; i++){
+                if(dateCell[i].classList.contains('selected')){
+                    let date = dateCell[i].getAttribute('data-date')
+                    let inpt = document.createElement('input')
+                    inpt.type = 'hidden'
+                    inpt.value = Number(date)
+                    dateCell[i].appendChild(inpt)
+                    console.log(inpt.value)
+                }
+            }
+        }
          
         </script>
         <?php
