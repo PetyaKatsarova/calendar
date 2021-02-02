@@ -231,7 +231,6 @@ class Calendar{
         let startDate;
         function mouseEvents(e,mode){
             
-
             function onmouseenter(e){
                 let endDate = new Date(Number(e.target.getAttribute("data-date")));
                 let cellDate = new Date(startDate)
@@ -282,14 +281,14 @@ class Calendar{
                 }
             })
         }
-        weeksUlWrapper.addEventListener('mousedown', (e)=>{
+        weeksUlwrapper.addEventListener('mousedown', (e)=>{
             startDate = new Date(Number(e.target.getAttribute("data-date")))
             let mode = "select";
-            if(e.target.tagName == 'SPAN'){
+            if(e.target.tagName == 'SPAN' && e.target.getAttribute("data-date")){
                 if (e.target.classList.contains('selected'))  {
                     mode = "deselect";
                 }          
-                if ((document.getElementById('checkb').checked) || ((startDate.getDay() != 0 && startDate.getDay() != 6))){
+                if ((document.getElementById('checkb').checked) || ((startDate.getDay() != 0 && startDate.getDay() != 6 ))){
                     e.target.classList.toggle('selected')
                 }
                 mouseEvents(e,mode)
